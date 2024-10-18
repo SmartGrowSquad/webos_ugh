@@ -1,0 +1,14 @@
+.qrButtonContainer {
+    position: fixed; 
+    top: 40%;    /* 위에서부터 20% */
+    left: 50%;   
+    transform: translateX(-50%); /* 가로 중앙 정렬 */
+    z-index: 1;
+}
+
+.controlButtonContainer {
+    position: fixed; 
+    bottom: 10%;    /* 아래에서부터 10% */
+    right: 5%;      /* 오른쪽에서 5% */
+    z-index: 1;
+}
