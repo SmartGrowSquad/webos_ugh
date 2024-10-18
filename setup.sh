@@ -38,11 +38,11 @@ fi
 
 # Remove old app
 echo "delete old app"
-# ares-install --remove com.ugh.app
-# if [ $? -ne 0 ]; then
-#   echo "Failed to remove old app. Exiting."
-#   exit 1
-# fi
+ares-install --remove com.ugh.app
+if [ $? -ne 0 ]; then
+  echo "Failed to remove old app. Exiting."
+  exit 1
+fi
 
 # Create IPK package
 cd ..
