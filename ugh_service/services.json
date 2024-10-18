@@ -1,0 +1,9 @@
+{
+  "id": "com.ugh.app.service",
+  "description": "HelloWorld Service",
+  "services": [
+    {
+      "name": "com.ugh.app.service"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+    "id": "com.ugh.app",
+    "version": "1.0.0",
+    "vendor": "My Company",
+    "type": "web",
+    "main": "index.html",
+    "title": "ugh",
+    "icon": "icon.png",
+    "allowVideoCapture": true,
+    "enableWebOSVDA": true,
+    "requiredPermissions": [
+        "all"
+    ]
+}

@@ -1,0 +1,9 @@
+.env
+
+com.ugh.*
+
+node_modules/
+
+testingApp.sh
+
+package-lock.json
