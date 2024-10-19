@@ -22,6 +22,7 @@ fi
 
 # Install npm dependencies
 echo "running npm install"
+npm uninstall websocket-stream ws
 npm install
 if [ $? -ne 0 ]; then
   echo "npm install failed. Exiting."
@@ -36,9 +37,20 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+cd ../ugh_service
+rm -rf package-lock.json
+echo "running npm install for service"
+npm install
+if [ $? -ne 0 ]; then
+  echo "npm install failed. Exiting."
+  exit 1
+fi
+
 # Remove old app
 echo "delete old app"
-ares-install --remove com.ugh.app
+# ares-install --remove com.ugh.app
+# ares-install --remove com.ugh.app.service
+
 if [ $? -ne 0 ]; then
   echo "Failed to remove old app. Exiting."
   exit 1
@@ -46,7 +58,7 @@ fi
 
 # Create IPK package
 cd ..
-ares-package ugh/dist
+ares-package ugh/dist ugh_service
 if [ $? -ne 0 ]; then
   echo "Failed to create IPK package. Exiting."
   exit 1

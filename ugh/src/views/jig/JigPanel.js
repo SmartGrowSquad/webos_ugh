@@ -2,6 +2,7 @@ import React from 'react';
 import Panel from '@enact/sandstone/Panels';
 import Button from '@enact/sandstone/Button';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import './JigPanel.css';
 
 const JigPanel = ({ onNavigate, ...rest }) => {
@@ -16,16 +17,48 @@ const JigPanel = ({ onNavigate, ...rest }) => {
     { degree: 28, humidity: 40 }
   ];
 
+  // PUT 버튼 클릭 시 MQTT 서비스로 요청
+  const handlePut = (id) => {
+    const putMessage = id + 4;
+    console.log(`PUT command sent: ${putMessage}`);
+    
+    axios.post('http://localhost:4000/publish', {
+      topic: 'JIG',
+      message: putMessage.toString()
+    })
+    .then(response => {
+      console.log('Message sent successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error sending message:', error);
+    });
+  };
+
+  // GET 버튼 클릭 시 MQTT 서비스로 요청
+  const handleGet = (id) => {
+    console.log(`GET command sent: ${id}`);
+    
+    axios.post('http://localhost:4000/publish', {
+      topic: 'JIG',
+      message: id.toString()
+    })
+    .then(response => {
+      console.log('Message sent successfully:', response.data);
+    })
+    .catch(error => {
+      console.error('Error sending message:', error);
+    });
+  };
+
   return (
     <Panel {...rest} className="jig_control_panel">
       <div>
-        {/* 사이드바 */}
         <div className="jig_sidebar">
           <div className="jig_back" onClick={() => onNavigate(0)}>돌아가기</div>
+          <div className="jig_menu_item" onClick={() => onNavigate(2)}>환경제어</div>
           <div className="jig_menu_item active">설비제어</div>
         </div>
 
-        {/* 메인 컨텐츠 */}
         <div className="jig_main_content">
           {dummyDegree.map((dat) => (
             <React.Fragment key={dat.degree}>
@@ -44,12 +77,14 @@ const JigPanel = ({ onNavigate, ...rest }) => {
                       <Button
                         className="put"
                         disabled={data.status !== 'red'}
+                        onClick={() => handlePut(data.id)}
                       >
                         PUT
                       </Button>
                       <Button
                         className="get"
                         disabled={data.status !== 'green'}
+                        onClick={() => handleGet(data.id)}
                       >
                         GET
                       </Button>

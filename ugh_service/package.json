@@ -1,16 +1,20 @@
 {
-  "name": "com.ugh.urbani.service",
+  "name": "com.ugh.app.service",
   "version": "1.0.0",
   "description": "Helloworld service",
   "main": "webos_service.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "echo \"Post-install tasks completed.\"",
+    "start-mqtt": "node mqtt_service.js"
   },
   "author": "",
   "license": "BSD",
   "dependencies": {
     "dotenv": "^16.0.3",
     "mqtt": "^4.3.7",
-    "mqtt-client": "^0.1.0"
+    "mqtt-client": "^0.1.0",
+    "express": "^4.17.1",
+    "cors": "^2.8.5"
   }
 }

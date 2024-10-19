@@ -7,3 +7,5 @@ node_modules/
 testingApp.sh
 
 package-lock.json
+
+dist
