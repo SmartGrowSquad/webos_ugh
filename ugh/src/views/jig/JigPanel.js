@@ -3,6 +3,8 @@ import Panel from '@enact/sandstone/Panels';
 import Button from '@enact/sandstone/Button';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { Slide, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './JigPanel.css';
 
 const JigPanel = ({ onNavigate, ...rest }) => {
@@ -17,11 +19,25 @@ const JigPanel = ({ onNavigate, ...rest }) => {
     { degree: 28, humidity: 40 }
   ];
 
+  // Toast notification을 위한 함수
+  const notify = (message) => toast(message, {
+    position: "top-center",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    theme: "light",
+    transition: Slide,
+    });
+
   // PUT 버튼 클릭 시 MQTT 서비스로 요청
   const handlePut = (id) => {
     const putMessage = id + 4;
     console.log(`PUT command sent: ${putMessage}`);
-    
+    notify(`${id}번 지그를 넣습니다.`);
+
     axios.post('http://localhost:4000/publish', {
       topic: 'JIG',
       message: putMessage.toString()
@@ -37,7 +53,8 @@ const JigPanel = ({ onNavigate, ...rest }) => {
   // GET 버튼 클릭 시 MQTT 서비스로 요청
   const handleGet = (id) => {
     console.log(`GET command sent: ${id}`);
-    
+    notify(`${id}번 지그를 가져옵니다.`);
+
     axios.post('http://localhost:4000/publish', {
       topic: 'JIG',
       message: id.toString()
@@ -52,7 +69,9 @@ const JigPanel = ({ onNavigate, ...rest }) => {
 
   return (
     <Panel {...rest} className="jig_control_panel">
+      
       <div>
+        <ToastContainer/>
         <div className="jig_sidebar">
           <div className="jig_back" onClick={() => onNavigate(0)}>돌아가기</div>
           <div className="jig_menu_item" onClick={() => onNavigate(2)}>환경제어</div>

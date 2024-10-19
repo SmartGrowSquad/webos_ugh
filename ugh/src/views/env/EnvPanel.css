@@ -132,3 +132,18 @@
     top: 65% !important;
     transform: translateY(-200%); /* 상하 간격을 동일하게 설정 */
 }
+
+.Toastify__toast {
+    min-height: 300px !important; /* 높이 조정 (필요에 따라 변경) */
+    min-width: 1500px !important;
+    display: flex !important; /* 플렉스 박스로 전환 */
+    align-items: center !important;/* 세로 중앙 정렬 */
+    justify-content: center !important; /* 가로 중앙 정렬 */
+    font-size: 60px !important; /* 폰트 크기 설정 */
+    font-weight: bold !important;
+    padding: 20px !important; /* 여백 설정 */
+    text-align: center !important;
+    border-radius: 30px;
+    right: 140%;
+  }
+  
