@@ -3,7 +3,7 @@ import Panel from '@enact/sandstone/Panels';
 import Button from '@enact/sandstone/Button';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Slide, ToastContainer, toast } from 'react-toastify';
+import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './JigPanel.css';
 
@@ -29,7 +29,7 @@ const JigPanel = ({ onNavigate, ...rest }) => {
     draggable: true,
     progress: undefined,
     theme: "light",
-    transition: Slide,
+    transition: Flip,
     });
 
   // PUT 버튼 클릭 시 MQTT 서비스로 요청

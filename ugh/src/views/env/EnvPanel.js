@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Panel from '@enact/sandstone/Panels';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { Slide, ToastContainer, toast } from 'react-toastify';
+import { Flip, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './EnvPanel.css';
 
@@ -19,7 +19,7 @@ const EnvPanel = ({ onNavigate, ...rest }) => {
     draggable: true,
     progress: undefined,
     theme: "light",
-    transition: Slide,
+    transition: Flip,
     });
 
     const feed = () => {

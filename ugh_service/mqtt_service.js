@@ -1,5 +1,7 @@
 const mqttConnector = require('./mqtt_connector');
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 app.use(express.json());
 
@@ -51,6 +53,18 @@ app.get('/check-message', (req, res) => {
     res.send({ message: null });
   }
 });
+
+app.get('/dummy-data', (req, res) => {
+    const filePath = path.join(__dirname, 'dummyData/QRTest.json');
+    fs.readFile(filePath, 'utf8', (err, data) => {
+      if (err) {
+        console.error('더미 데이터 읽기 실패:', err);
+        res.status(500).send({ error: '더미 데이터를 읽을 수 없습니다.' });
+      } else {
+        res.send(JSON.parse(data)); // JSON 데이터를 클라이언트로 전송
+      }
+    });
+  });
 
 app.listen(4000, () => {
   console.log('MQTT 서비스가 포트 4000에서 실행 중');
