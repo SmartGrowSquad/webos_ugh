@@ -32,6 +32,7 @@ const App = (props) => {
   };
   
   useEffect(() => {
+    var params = {}
     let lsRequest = {
       service: "luna://com.ugh.app.service",
       method: "serviceStart",

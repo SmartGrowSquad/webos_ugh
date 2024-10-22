@@ -8,6 +8,7 @@ var check3 = undefined;
 
 function init(service){
     ls2 = service;
+    console.log("[Init] ls2 initialized:", ls2);
 }
 
 function toast(msg){

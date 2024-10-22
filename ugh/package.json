@@ -30,6 +30,7 @@
 		"dist/*"
 	],
 	"dependencies": {
+		"@emotion/styled": "^11.13.0",
 		"@enact/core": "^4.8.0",
 		"@enact/i18n": "^4.8.0",
 		"@enact/sandstone": "^2.9.0",

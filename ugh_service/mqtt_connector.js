@@ -1,5 +1,7 @@
+require("dotenv").config();
 const mqtt = require('mqtt');
 const host = process.env.MQTT_HOST || 'mqtt://localhost:1883';
+
 
 const options = {
   clientId: 'mqtt_client_' + Math.random().toString(16).substr(2, 8),

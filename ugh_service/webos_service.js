@@ -7,6 +7,7 @@ const service = new Service(pkgInfo.name);
 require("dotenv").config();
 
 let client;
+let lastMessage = '';
 const supIp = process.env.SUP_IP;
 
 // 서비스 시작  
@@ -14,18 +15,18 @@ service.register("serviceStart", function(message) {
     luna.init(service); 
 
     console.log("[ Service Started data ]", message);
-    const data = JSON.parse(message.payload.data);
+    //const data = JSON.parse(message.payload.data);
 
     client = mqtt.connect();
 
-    client.subscribe('TEMP', (message) => {
-        if (message === '0') {
-            message.response(message);
+    client.subscribe('TEMP', (msg) => {
+        if (msg === '0') {
+            message.response(msg);
         }
     });
 
-    client.subscribe('JIG', (message) => {
-        if (message === 'F') {
+    client.subscribe('JIG_ESP', (msg) => {
+        if (msg === 'F') {
             console.log('특정 조건에 따라 동작 실행: F 메시지 수신');
             lastMessage = 'F'; // 'F' 메시지를 수신하면 저장
         }
@@ -35,10 +36,11 @@ service.register("serviceStart", function(message) {
 // 알림
 service.register("toast", function(message) {
     const payload = message.payload
+    console.log("페이로드",payload);
     luna.toast(payload.alert);
     client.publish(payload.topic, payload.msg, { qos: 1 }); 
     console.log("Toast ", message.payload.msg);
-    payload.cd();
+    //payload.cd();
 }); 
 
 // qr 인증
@@ -60,4 +62,3 @@ service.register("qrValidate", async (message) => {
         data.onQrSuccess();
     })
 });
-
