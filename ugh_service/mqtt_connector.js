@@ -10,40 +10,37 @@ const options = {
   reconnectPeriod: 1000,
 };
 
-let client;
 let isConnected = false;
 
 function connect() {
-  return new Promise((resolve, reject) => {
-    if (isConnected) {
-      console.log('이미 연결되어 있습니다.');
-      return resolve();
-    }
+  if (isConnected) {
+    console.log('이미 연결되어 있습니다.');
+    return resolve();
+  }
 
-    client = mqtt.connect(host, options);
+  const client = mqtt.connect(host, options);
 
-    client.on('connect', () => {
-      console.log('MQTT 연결 성공');
-      isConnected = true;
-      resolve();
-    });
-
-    client.on('error', (err) => {
-      console.error('MQTT 연결 에러:', err);
-      client.end();
-      isConnected = false;
-      reject(err);
-    });
-
-    client.on('close', () => {
-      console.log('MQTT 연결 종료');
-      isConnected = false;
-    });
+  client.on('connect', () => {
+    console.log('MQTT 연결 성공');
+    isConnected = true;
   });
+
+  client.on('error', (err) => {
+    console.error('MQTT 연결 에러:', err);
+    client.end();
+    isConnected = false;
+  });
+
+  client.on('close', () => {
+    console.log('MQTT 연결 종료');
+    isConnected = false;
+  });
+
+  return client;
 }
 
 // MQTT 메시지 발행
-async function publish(topic, message, cb) {
+function publish(topic, message, cb) {
   if (!isConnected) {
     console.error('MQTT 연결되지 않음. 연결을 먼저 수행해야 합니다.');
     return cb(new Error('MQTT 연결되지 않음.'));
@@ -90,9 +87,7 @@ function disconnect() {
   }
 }
 
-module.exports = {
-  connect,
-  publish,
-  subscribe,
-  disconnect,
-};
+exports.connect = connect;
+exports.publish = publish;
+exports.subscribe = subscribe;
+exports.disconnect = disconnect;

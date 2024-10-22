@@ -5,6 +5,7 @@ import React from 'react';
 import './MainPanel.css';
 
 const MainPanel = ({ onNavigate, ...rest }) => {
+
   return (
     <Panel {...rest}>
       <div>

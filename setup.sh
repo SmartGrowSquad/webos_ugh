@@ -2,7 +2,7 @@
 
 # Delete old IPK file
 echo "delete old ipk file"
-rm -rf com.ugh.app.browser_1.0.0_all.ipk
+rm -rf com.ugh.app_1.0.0_all.ipk
 if [ $? -ne 0 ]; then
   echo "Failed to delete old IPK file. Exiting."
   exit 1
@@ -21,8 +21,9 @@ if [ $? -ne 0 ]; then
 fi
 
 # Install npm dependencies
-echo "running npm install"
-npm uninstall websocket-stream ws
+# echo "running npm install"
+# npm uninstall websocket-stream ws
+
 npm install
 if [ $? -ne 0 ]; then
   echo "npm install failed. Exiting."
@@ -37,6 +38,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+
+
 cd ../ugh_service
 rm -rf package-lock.json
 echo "running npm install for service"
@@ -46,18 +49,19 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+cd ..
+
 # Remove old app
 echo "delete old app"
-# ares-install --remove com.ugh.app
-# ares-install --remove com.ugh.app.service
+ares-install --remove com.ugh.app
 
 if [ $? -ne 0 ]; then
   echo "Failed to remove old app. Exiting."
   exit 1
 fi
 
+echo "package new app"
 # Create IPK package
-cd ..
 ares-package ugh/dist ugh_service
 if [ $? -ne 0 ]; then
   echo "Failed to create IPK package. Exiting."
@@ -65,6 +69,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Install new app
+echo "install new app"
 ares-install com.ugh.app_1.0.0_all.ipk
 if [ $? -eq 0 ]; then
     # ares-install이 성공적으로 끝났을 경우 추가 스크립트 실행

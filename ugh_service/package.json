@@ -11,9 +11,9 @@
   "author": "",
   "license": "BSD",
   "dependencies": {
+    "axios": "1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
-    "express": "^4.17.1",
     "mqtt": "^4.3.7",
     "mqtt-client": "^0.1.0"
   }

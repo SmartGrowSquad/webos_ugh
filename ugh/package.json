@@ -37,7 +37,7 @@
 		"@enact/ui": "^4.8.0",
 		"@enact/webos": "^4.9.0",
 		"@reduxjs/toolkit": "^1.9.7",
-		"axios": "^1.7.7",
+		"axios": "1.7.7",
 		"ilib": "^14.19.0",
 		"mqtt": "^4.3.7",
 		"prop-types": "^15.8.1",

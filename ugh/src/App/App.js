@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ThemeDecorator from '@enact/sandstone/ThemeDecorator';
 import Panels from '@enact/sandstone/Panels';
 
@@ -9,10 +9,15 @@ import css from './App.module.less';
 import EnvPanel from '../views/env/EnvPanel';
 import Camera2  from '../views/camera/Camera2';
 import Camera3  from '../views/camera/Camera3';
+import LS2Request from "@enact/webos/LS2Request";
+import { useDispatch } from 'react-redux';
+import { setEnvData } from '../store/store';
 
 const App = (props) => {
   const [panelIndex, setPanelIndex] = useState(0);
   const [noAnimation, setNoAnimation] = useState(false);
+  const dispatch = useDispatch();
+  const bridge = new LS2Request();
 
   const handleNavigate = (index, disableAnimation = false) => {
     if (disableAnimation) {
@@ -25,7 +30,21 @@ const App = (props) => {
       setPanelIndex(index);
     }
   };
-
+  
+  useEffect(() => {
+    let lsRequest = {
+      service: "luna://com.ugh.app.service",
+      method: "serviceStart",
+      parameters: params,
+      onSuccess: (msg) => {
+        dispatch(setEnvData(msg));
+      },
+      onFailure: (err) => {
+        console.log(err);
+      },
+    };
+    bridge.send(lsRequest);
+  }, []);
   return (
     <div {...props} className={css.app}>
       <Panels index={panelIndex} noCloseButton noAnimation={noAnimation}>
