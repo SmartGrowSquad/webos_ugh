@@ -2,7 +2,8 @@ import styled from '@emotion/styled';
 import QrScanner from 'qr-scanner';
 import { useState, useEffect, useRef } from 'react';
 import LS2Request from "@enact/webos/LS2Request";
-
+import {useDispatch} from 'react-redux';
+import { setIsWorking } from '../store/store';
 export const QrOptions = {
   // 핸드폰의 경우, 외부 카메라인지 셀프카메라인지
   preferredCamera: 'environment',
@@ -19,7 +20,7 @@ const QrReader = ({ onNavigate, ...rest }) => {
   const videoRef = useRef(null);
   const qrScannerRef = useRef(null);
   const bridge = new LS2Request();
-
+  const dispatch = useDispatch();
 
   function detectBrowser() {
     const userAgent = window.navigator.userAgent;
@@ -62,6 +63,7 @@ const QrReader = ({ onNavigate, ...rest }) => {
   };
 
   const onQrSuccess = () => {
+    dispatch(setIsWorking(true));
     console.log("QR Code Scanned");
     onNavigate(4); // 원하는 페이지로 이동
   }
@@ -74,8 +76,9 @@ const QrReader = ({ onNavigate, ...rest }) => {
 
   const handleScan = (result) => {
     if(result) {
-      console.log(result);
-      setData(result);
+      const data = JSON.parse(result.data);
+      console.log(data);
+      setData(data);
       // 스캔 완료 시 비디오 스트림 중지 및 다음 페이지로 이동
       if (videoRef.current && videoRef.current.srcObject) {
         const tracks = videoRef.current.srcObject.getTracks();
@@ -85,21 +88,20 @@ const QrReader = ({ onNavigate, ...rest }) => {
       if (qrScannerRef.current) {
         qrScannerRef.current.stop();
       }
-      console.log("QR Code Scanned: " + result);
+      console.log("QR Code Scanned: " + data);
 
       var lsRequest = {
         service: "luna://com.ugh.app.service",
         method: "qrValidate",
         parameters: {
-          data: result,
-          cb: onQrSuccess(),
-          errorCb: onQrFail(),
+          data: data,
         },
         onSuccess: (msg) => {
-          console.log(msg);
+          console.log("QR Code valid");
+          onQrSuccess();
         },
         onFailure: (err) => {
-          console.log(err);
+          onQrFail();
         },
       }
       bridge.send(lsRequest);
@@ -125,20 +127,34 @@ const QrReader = ({ onNavigate, ...rest }) => {
 
   return (
     <QrScannerContainer>
-      <QrScannerWrapper>
-        <div onClick={() => onNavigate(0)}>돌아가기</div>
+      <BackButton onClick={() => onNavigate(0)}>뒤로가기</BackButton>
+      <QrScannerViewContainer>
         <QrScannerView ref={videoRef} autoPlay playsInline />
-        { isFailed && <QrScannerMessageContainer></QrScannerMessageContainer>}
-      </QrScannerWrapper>
+      </QrScannerViewContainer>
     </QrScannerContainer>
   );
 }
 
 const QrScannerContainer = styled.div`
+  width: 100%;
+  height: 100%; /* 화면 전체 높이를 차지 */
+  background-color: #f5f5f5;
+`;
+const BackButton = styled.div`
+  padding: 10px;
+  font-size: 50px;
+  color: #333;
+  cursor: pointer;
+`;
+const QrScannerViewContainer = styled.div`
   flex: 1;
+  height: 100%; 
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 `;
+
 const QrScannerWrapper = styled.video`
   gap: 20px;
 `;

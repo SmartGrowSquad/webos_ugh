@@ -20,7 +20,7 @@ function connect() {
     return resolve();
   }
 
-  const client = mqtt.connect(host, options);
+  client = mqtt.connect(host, options);
 
   client.on('connect', () => {
     console.log('MQTT 연결 성공');

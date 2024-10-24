@@ -164,3 +164,20 @@
     right: 140%;
   }
   
+.isWorkingOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 검정색, 투명도 50% */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* 높은 z-index로 화면을 가리도록 설정 */
+}
+
+.isWorking {
+    color: white;
+    font-size: 24px;
+}

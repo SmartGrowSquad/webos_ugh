@@ -7,12 +7,12 @@ import './MainPanel.css';
 const MainPanel = ({ onNavigate, ...rest }) => {
 
   return (
-    <Panel {...rest}>
+    <Panel {...rest} className='container'>
       <div>
-        <div className="qrButtonContainer">
-          <Button onClick={() => onNavigate(3)}>
-            QR 코드 인식하기
-          </Button>
+        <div>
+          <div className="qrButtonContainer" onClick={() => onNavigate(3)}>
+            Pick up!
+          </div>
         </div>
         <div className="controlButtonContainer">
           <Button onClick={() => onNavigate(1)}>

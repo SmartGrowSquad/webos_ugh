@@ -4,6 +4,11 @@
     left: 50%;   
     transform: translateX(-50%); /* 가로 중앙 정렬 */
     z-index: 1;
+    color: #333;              /* 흰색 텍스트 */
+    font-size: 100px;           /* 글자 크기 */
+    padding: 80px 160px;        /* 내부 여백 */
+    border-radius: 20px;
+    background-color: #91EE94;       /* 둥근 모서리 */
 }
 
 .controlButtonContainer {
@@ -11,4 +16,9 @@
     bottom: 10%;    /* 아래에서부터 10% */
     right: 5%;      /* 오른쪽에서 5% */
     z-index: 1;
+}
+
+.container {
+    background-color: #f5f5f5;
+    
 }

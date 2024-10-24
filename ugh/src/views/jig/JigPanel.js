@@ -3,42 +3,27 @@ import Panel from '@enact/sandstone/Panels';
 import Button from '@enact/sandstone/Button';
 import PropTypes from 'prop-types';
 import LS2Request from "@enact/webos/LS2Request";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import './JigPanel.css';
+import { setIsWorking } from '../../store/store';
 
 const JigPanel = ({ onNavigate, ...rest }) => {
   const envData = useSelector(state => state.envData);
+  const isWorking = useSelector(state => state.isWorking);
   const [buttonsEnabled, setButtonsEnabled] = useState(true); // 기본 상태는 데이터에 따라 활성화 결정
-  const dummyData = [
+  const [jigs, setJigs] = useState([
     { id: 1, status: 'red' },
     { id: 2, status: 'red' },
     { id: 3, status: 'green' },
     { id: 4, status: 'green' }
-  ];
-
-  const dummyDegree = [
-    { degree: 28, humidity: 40 }
-  ];
+  ]);
+  
+  const dispatch = useDispatch();
   const bridge = new LS2Request();
-
-  // MQTT 메시지 구독 후 버튼 활성화 처리
-  useEffect(() => {
-    const handleMqttMessage = (msg) => {
-      console.log(`Received MQTT message: ${msg}`);
-      if (msg === 'F') {
-        setButtonsEnabled(true); // 'F' 메시지를 수신하면 버튼 활성화
-      }
-    };
-    bridge.send(lsRequest);
-
-    // Cleanup function
-    return () => {
-      bridge.cancel(lsRequest);
-    };
-  }, []); // 컴포넌트 마운트 후 1회만 실행
 
   // PUT 버튼 클릭 시 MQTT 서비스로 요청 후 버튼 비활성화
   const handlePut = (id) => {
+    dispatch(setIsWorking(true));
     setButtonsEnabled(false); // PUT을 누르면 모든 버튼 비활성화
     const putMessage = id + 4;
     console.log(`PUT command sent: ${putMessage}`);
@@ -52,6 +37,7 @@ const JigPanel = ({ onNavigate, ...rest }) => {
         msg: putMessage.toString(),
       },
       onSuccess: (msg) => {
+        setJigs(jigs.map(jig => jig.id === id ? { ...jig, status: 'green' } : jig));
         console.log(msg);
       },
       onFailure: (err) => {
@@ -63,6 +49,7 @@ const JigPanel = ({ onNavigate, ...rest }) => {
 
   // GET 버튼 클릭 시 MQTT 서비스로 요청 후 버튼 비활성화
   const handleGet = (id) => {
+    dispatch(setIsWorking(true));
     setButtonsEnabled(false); // GET을 누르면 모든 버튼 비활성화
     console.log(`GET command sent: ${id}`);
 
@@ -75,6 +62,7 @@ const JigPanel = ({ onNavigate, ...rest }) => {
         msg: id.toString(),
       },
       onSuccess: (msg) => {
+        setJigs(jigs.map(jig => jig.id === id ? { ...jig, status: 'red' } : jig));
         console.log(msg);
       },
       onFailure: (err) => {
@@ -83,9 +71,11 @@ const JigPanel = ({ onNavigate, ...rest }) => {
     };
     bridge.send(lsRequest);
   };
+  
+  useEffect(() => {}, [jigs]);
 
   return (
-    <Panel {...rest} className="jig_control_panel">
+    <Panel {...rest} className="jig_control_panel"> 
       <div>
         <div className="jig_sidebar">
           <div className="jig_back" onClick={() => onNavigate(0)}>돌아가기</div>
@@ -94,41 +84,37 @@ const JigPanel = ({ onNavigate, ...rest }) => {
         </div>
 
         <div className="jig_main_content">
-          {dummyDegree.map((dat) => (
-            <React.Fragment key={dat.degree}>
-              <h1 className="jig_degree">
-                온도 : {envData.temp}°C
-                <br />
-                습도 : {envData.humidity}%
-              </h1>
-              <div className="jig_card_container">
-                {dummyData.map((data) => (
-                  <div className="jig_card" key={data.id}>
-                    <div className="jig_card_header">
-                      <span>No.{data.id}</span>
-                      <div className={`jig_status_indicator ${data.status}`}></div>
-                    </div>
-                    <div className="jig_card_body">
-                      <Button
-                        className="put"
-                        disabled={!buttonsEnabled || data.status !== 'red'} // 데이터에 따라 버튼 활성화 여부 결정
-                        onClick={() => handlePut(data.id)}
-                      >
-                        PUT
-                      </Button>
-                      <Button
-                        className="get"
-                        disabled={!buttonsEnabled || data.status !== 'green'} // 데이터에 따라 버튼 활성화 여부 결정
-                        onClick={() => handleGet(data.id)}
-                      >
-                        GET
-                      </Button>
-                    </div>
-                  </div>
-                ))}
+          <h1 className="jig_degree">
+            온도 : {envData.temp}°C
+            <br />
+            습도 : {envData.humidity}%
+          </h1>
+          <div className="jig_card_container">
+            {jigs.map((data) => (
+              <div className="jig_card" key={data.id}>
+                <div className="jig_card_header">
+                  <span>No.{data.id}</span>
+                  <div className={`jig_status_indicator ${data.status}`}></div>
+                </div>
+                <div className="jig_card_body">
+                  <Button
+                    className="put"
+                    disabled={isWorking || data.status !== 'red'} // 데이터에 따라 버튼 활성화 여부 결정
+                    onClick={() => !isWorking && handlePut(data.id)}
+                  >
+                    PUT
+                  </Button>
+                  <Button
+                    className="get"
+                    disabled={isWorking || data.status !== 'green'} // 데이터에 따라 버튼 활성화 여부 결정
+                    onClick={() => !isWorking && handleGet(data.id)}
+                  >
+                    GET
+                  </Button>
+                </div>
               </div>
-            </React.Fragment>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
     </Panel>
